@@ -1,0 +1,13 @@
+"use client";
+import { useEffect,useState } from "react";
+import Link from "next/link";
+import { Search,ExternalLink } from "lucide-react";
+import { api,money } from "@/lib/api";
+import type { Order } from "@/lib/types";
+import { toast } from "sonner";
+const statuses=["all","pending","confirmed","processing","shipped","delivered","cancelled"];
+export default function OrdersAdmin(){const [orders,setOrders]=useState<Order[]>([]);const [status,setStatus]=useState("all");const [search,setSearch]=useState("");const token=()=>localStorage.getItem("gb-token")||"";
+ async function load(){try{const q=new URLSearchParams();if(status!=="all")q.set("status",status);if(search)q.set("search",search);setOrders(await api<Order[]>(`/orders?${q}`,{},token()));}catch(e){toast.error(e instanceof Error?e.message:"Could not load orders");}}
+ useEffect(()=>{if(!token()){location.href="/admin/login";return;}load();},[status]);
+ return <div><p className="text-xs font-bold tracking-widest text-emerald-700">SALES</p><h1 className="text-3xl font-black">Orders</h1><p className="mb-6 text-sm text-muted-foreground">Review, filter and update customer orders.</p><div className="panel"><div className="mb-5 flex flex-col gap-3 sm:flex-row"><label className="relative flex-1"><Search size={16} className="absolute left-3 top-3 text-muted-foreground"/><input className="field pl-9" placeholder="Search order, customer or phone" value={search} onChange={e=>setSearch(e.target.value)} onKeyDown={e=>e.key==="Enter"&&load()}/></label><button onClick={load} className="btn-primary">Search</button><select className="field sm:w-48" value={status} onChange={e=>setStatus(e.target.value)}>{statuses.map(s=><option key={s} value={s}>{s==="all"?"All statuses":s}</option>)}</select></div><div className="overflow-x-auto"><table className="w-full min-w-[700px] text-left text-sm"><thead className="text-xs text-muted-foreground"><tr><th className="pb-4">Order ID</th><th>Customer</th><th>Phone</th><th>Date</th><th>Total</th><th>Status</th><th></th></tr></thead><tbody>{orders.map(o=><tr key={o._id} className="border-t"><td className="py-4 font-bold">{o.orderNumber}</td><td>{o.customer.name}</td><td>{o.customer.phone}</td><td>{new Date(o.createdAt).toLocaleDateString()}</td><td className="font-semibold">{money(o.total)}</td><td><span className="rounded-full bg-muted px-2 py-1 text-xs capitalize">{o.status}</span></td><td><Link href={`/admin/orders/${o._id}`} className="inline-flex items-center gap-1 text-emerald-700">Details <ExternalLink size={13}/></Link></td></tr>)}</tbody></table>{!orders.length&&<p className="py-10 text-center text-sm text-muted-foreground">No matching orders found.</p>}</div></div></div>;
+}

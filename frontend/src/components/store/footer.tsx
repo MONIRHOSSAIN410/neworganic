@@ -1,0 +1,2 @@
+import Link from "next/link";
+export function Footer() { return <footer className="mt-16 border-t"><div className="container-shell flex flex-col items-center justify-between gap-3 py-6 text-xs text-muted-foreground sm:flex-row"><Link href="/" className="font-bold text-emerald-800">greenbasket</Link><span>Fresh choices for a naturally better life.</span><span>© {new Date().getFullYear()} GreenBasket</span></div></footer>; }

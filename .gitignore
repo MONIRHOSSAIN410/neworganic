@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Next.js
+.next/
+out/
+build/
+dist/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# Cache
+.cache/
+.turbo/
+coverage/
+
+# OS
+.DS_Store
+Thumbs.db
