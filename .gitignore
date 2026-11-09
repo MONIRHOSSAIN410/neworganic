@@ -10,8 +10,6 @@ build/
 dist/
 
 # Environment variables
-.env
-.env.*
 !.env.example
 
 # Logs
@@ -26,3 +24,4 @@ coverage/
 # OS
 .DS_Store
 Thumbs.db
+config.bat
