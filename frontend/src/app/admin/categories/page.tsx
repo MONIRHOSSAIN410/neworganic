@@ -1,13 +1,149 @@
 "use client";
-import { useEffect,useState } from "react";
-import { Plus,Trash2,Pencil } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Plus, Trash2, Pencil } from "lucide-react";
 import { api } from "@/lib/api";
 import type { Category } from "@/lib/types";
 import { toast } from "sonner";
-export default function CategoriesAdmin(){const [cats,setCats]=useState<Category[]>([]);const [name,setName]=useState("");const [description,setDescription]=useState("");const [editing,setEditing]=useState<string|null>(null);const token=()=>localStorage.getItem("gb-token")||"";
- async function load(){try{setCats(await api<Category[]>("/categories?all=true"));}catch(e){toast.error(e instanceof Error?e.message:"Could not load categories");}}
- useEffect(()=>{if(!token()){location.href="/admin/login";return;}load();},[]);
- async function save(e:React.FormEvent){e.preventDefault();try{await api(`/categories${editing?`/${editing}`:""}`,{method:editing?"PATCH":"POST",body:JSON.stringify({name,description})},token());toast.success(editing?"Category updated":"Category created");setName("");setDescription("");setEditing(null);load();}catch(e){toast.error(e instanceof Error?e.message:"Save failed");}}
- async function del(id:string){if(!confirm("Delete this category?"))return;try{await api(`/categories/${id}`,{method:"DELETE"},token());toast.success("Category deleted");load();}catch(e){toast.error(e instanceof Error?e.message:"Delete failed");}}
- return <div><p className="text-xs font-bold tracking-widest text-emerald-700">CATALOGUE ORGANIZATION</p><h1 className="text-3xl font-black">Categories</h1><p className="mb-6 text-sm text-muted-foreground">Create and organize product categories.</p><div className="grid gap-5 lg:grid-cols-[.8fr_1.2fr]"><form onSubmit={save} className="panel h-fit"><h2 className="mb-4 font-bold">{editing?"Edit category":"Add category"}</h2><label className="label">Category name</label><input required className="field" value={name} onChange={e=>setName(e.target.value)} placeholder="e.g. Organic Spices"/><label className="label mt-4">Description</label><textarea className="field" rows={3} value={description} onChange={e=>setDescription(e.target.value)} placeholder="Short category description"/><div className="mt-4 flex gap-2"><button className="btn-primary"><Plus size={15}/>{editing?"Update":"Add category"}</button>{editing&&<button type="button" className="btn-secondary" onClick={()=>{setEditing(null);setName("");setDescription("");}}>Cancel</button>}</div></form><div className="panel"><h2 className="mb-4 font-bold">All categories <span className="text-muted-foreground">({cats.length})</span></h2><div className="divide-y">{cats.map(c=><div key={c._id} className="flex items-center justify-between gap-3 py-4"><div><b className="text-sm">{c.name}</b><p className="mt-1 text-xs text-muted-foreground">{c.description||"No description"}</p></div><div className="flex gap-2"><button className="icon-button" onClick={()=>{setEditing(c._id);setName(c.name);setDescription(c.description||"");}}><Pencil size={15}/></button><button className="icon-button text-red-500" onClick={()=>del(c._id)}><Trash2 size={15}/></button></div></div>)}</div></div></div></div>;
+export default function CategoriesAdmin() {
+  const [cats, setCats] = useState<Category[]>([]);
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [editing, setEditing] = useState<string | null>(null);
+  const token = () => localStorage.getItem("gb-token") || "";
+  async function load() {
+    try {
+      setCats(await api<Category[]>("/categories?all=true"));
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not load categories");
+    }
+  }
+  useEffect(() => {
+    if (!token()) {
+      location.href = "/admin/login";
+      return;
+    }
+    load();
+  }, []);
+  async function save(e: React.FormEvent) {
+    e.preventDefault();
+    try {
+      await api(
+        `/categories${editing ? `/${editing}` : ""}`,
+        {
+          method: editing ? "PATCH" : "POST",
+          body: JSON.stringify({ name, description }),
+        },
+        token(),
+      );
+      toast.success(editing ? "Category updated" : "Category created");
+      setName("");
+      setDescription("");
+      setEditing(null);
+      load();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Save failed");
+    }
+  }
+  async function del(id: string) {
+    if (!confirm("Delete this category?")) return;
+    try {
+      await api(`/categories/${id}`, { method: "DELETE" }, token());
+      toast.success("Category deleted");
+      load();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Delete failed");
+    }
+  }
+  return (
+    <div>
+      <p className="text-xs font-bold tracking-widest text-emerald-700">
+        CATALOGUE ORGANIZATION
+      </p>
+      <h1 className="text-3xl font-black">Categories</h1>
+      <p className="mb-6 text-sm text-muted-foreground">
+        Create and organize product categories.
+      </p>
+      <div className="grid gap-5 lg:grid-cols-[.8fr_1.2fr]">
+        <form onSubmit={save} className="panel h-fit">
+          <h2 className="mb-4 font-bold">
+            {editing ? "Edit category" : "Add category"}
+          </h2>
+          <label className="label">Category name</label>
+          <input
+            required
+            className="field"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="e.g. Organic Spices"
+          />
+          <label className="label mt-4">Description</label>
+          <textarea
+            className="field"
+            rows={3}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Short category description"
+          />
+          <div className="mt-4 flex gap-2">
+            <button className="btn-primary">
+              <Plus size={15} />
+              {editing ? "Update" : "Add category"}
+            </button>
+            {editing && (
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={() => {
+                  setEditing(null);
+                  setName("");
+                  setDescription("");
+                }}
+              >
+                Cancel
+              </button>
+            )}
+          </div>
+        </form>
+        <div className="panel">
+          <h2 className="mb-4 font-bold">
+            All categories{" "}
+            <span className="text-muted-foreground">({cats.length})</span>
+          </h2>
+          <div className="divide-y">
+            {cats.map((c) => (
+              <div
+                key={c._id}
+                className="flex items-center justify-between gap-3 py-4"
+              >
+                <div>
+                  <b className="text-sm">{c.name}</b>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {c.description || "No description"}
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    className="icon-button"
+                    onClick={() => {
+                      setEditing(c._id);
+                      setName(c.name);
+                      setDescription(c.description || "");
+                    }}
+                  >
+                    <Pencil size={15} />
+                  </button>
+                  <button
+                    className="icon-button text-red-500"
+                    onClick={() => del(c._id)}
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
