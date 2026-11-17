@@ -1,14 +1,29 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Minus, Plus, Trash2, ArrowRight, Truck } from "lucide-react";
 import { useCart } from "@/components/store/cart-provider";
-import { money } from "@/lib/api";
+import { api, money } from "@/lib/api";
+import type { SiteSettings } from "@/lib/types";
 
 export default function CartPage() {
   const { items, change, remove, subtotal } = useCart();
   const [area, setArea] = useState<"inside_dhaka" | "outside_dhaka">("inside_dhaka");
+  const [rates, setRates] = useState({ inside: 80, outside: 140 });
+
+  useEffect(() => {
+    api<SiteSettings>("/settings")
+      .then((res) => {
+        if (res) {
+          setRates({
+            inside: Number(res.deliveryInsideDhaka) || 80,
+            outside: Number(res.deliveryOutsideDhaka) || 140,
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const delivery =
     subtotal === 0
@@ -16,10 +31,10 @@ export default function CartPage() {
       : area === "outside_dhaka"
       ? subtotal >= 2500
         ? 0
-        : 120
+        : rates.outside
       : subtotal >= 1500
       ? 0
-      : 60;
+      : rates.inside;
 
   return (
     <div className="container-shell py-6 sm:py-10">
@@ -127,7 +142,7 @@ export default function CartPage() {
                   }`}
                 >
                   ঢাকার ভিতরে
-                  <span className="block text-[10px] font-bold text-emerald-700">৳৬০</span>
+                  <span className="block text-[10px] font-bold text-emerald-700">৳{rates.inside}</span>
                 </button>
                 <button
                   type="button"
@@ -139,7 +154,7 @@ export default function CartPage() {
                   }`}
                 >
                   ঢাকার বাইরে
-                  <span className="block text-[10px] font-bold text-emerald-700">৳১২০</span>
+                  <span className="block text-[10px] font-bold text-emerald-700">৳{rates.outside}</span>
                 </button>
               </div>
             </div>

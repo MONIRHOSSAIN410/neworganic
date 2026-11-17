@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ShoppingBasket, Sun, Moon, Menu, Search, PhoneCall, X, MapPin, ShoppingBag, Tags, ShieldCheck } from "lucide-react";
+import { ShoppingBasket, Sun, Moon, Menu, Search, PhoneCall, X, MapPin, ShoppingBag, Tags, ShieldCheck, Mail } from "lucide-react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
 import { useCart } from "./cart-provider";
@@ -18,6 +18,7 @@ export function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const [logo, setLogo] = useState("/image/savory.jpg");
   const [hotline, setHotline] = useState("01758749698");
+  const [email, setEmail] = useState("savorynestbd@proton.me");
   const [address, setAddress] = useState("Khilkhet, Dhaka 1229");
   const router = useRouter();
 
@@ -26,6 +27,7 @@ export function Header() {
       .then((res) => {
         if (res.shopLogo) setLogo(res.shopLogo);
         if (res.hotline) setHotline(res.hotline);
+        if (res.email) setEmail(res.email);
         if (res.address) setAddress(res.address);
       })
       .catch(() => {});
@@ -48,6 +50,14 @@ export function Header() {
             <span className="truncate">ঠিকানা: {address}</span>
           </div>
           <div className="flex items-center gap-3 sm:gap-4 text-emerald-100">
+            <a
+              href={`mailto:${email}`}
+              className="hidden lg:inline-flex items-center gap-1.5 font-bold hover:text-white transition-colors"
+            >
+              <Mail size={12} className="text-lime-300 shrink-0" />
+              <span>{email}</span>
+            </a>
+            <span className="hidden lg:inline text-emerald-300/60">|</span>
             <a
               href={`tel:${hotline.replace(/[^0-9+]/g, "")}`}
               className="inline-flex items-center gap-1.5 font-bold hover:text-white transition-colors"
@@ -239,6 +249,10 @@ export function Header() {
               <a href={`tel:${hotline.replace(/[^0-9+]/g, "")}`} className="text-emerald-700 font-bold inline-flex items-center gap-1">
                 <PhoneCall size={12} className="shrink-0" /> কল করুন
               </a>
+            </div>
+            <div className="text-[11px] text-muted-foreground px-3 flex items-center gap-1 pt-1">
+              <Mail size={12} className="text-emerald-700 shrink-0" />
+              <a href={`mailto:${email}`} className="hover:underline">{email}</a>
             </div>
             <div className="text-[11px] text-muted-foreground px-3 flex items-center gap-1 pt-1">
               <MapPin size={12} className="text-emerald-700 shrink-0" />

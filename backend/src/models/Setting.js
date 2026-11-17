@@ -13,8 +13,11 @@ const settingSchema = new mongoose.Schema(
     heroCopy: { type: String, default: "Shop honest ingredients, organic pantry essentials and everyday goodness for your family." },
     heroLink: { type: String, default: "#products" },
     hotline: { type: String, default: "01758749698" },
+    email: { type: String, default: "savorynestbd@proton.me" },
     address: { type: String, default: "Khilkhet, Dhaka 1229" },
     facebookLink: { type: String, default: "https://www.facebook.com/savorynestbd" },
+    deliveryInsideDhaka: { type: Number, default: 80 },
+    deliveryOutsideDhaka: { type: Number, default: 140 },
   },
   { timestamps: true }
 );

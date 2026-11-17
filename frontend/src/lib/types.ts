@@ -68,6 +68,9 @@ export type SiteSettings = {
   heroCopy?: string;
   heroLink?: string;
   hotline?: string;
+  email?: string;
   address?: string;
   facebookLink?: string;
+  deliveryInsideDhaka?: number;
+  deliveryOutsideDhaka?: number;
 };
