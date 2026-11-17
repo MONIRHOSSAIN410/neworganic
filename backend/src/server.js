@@ -12,22 +12,21 @@ import productRoutes from "./routes/productRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
+import bannerRoutes from "./routes/bannerRoutes.js";
+import settingRoutes from "./routes/settingRoutes.js";
 import { notFound, errorHandler } from "./middleware/errors.js";
 
 const app = express();
-const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:3000").split(",").map(s => s.trim());
 
-app.use(helmet());
+app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(cors({
-  origin(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
-    return callback(new Error("Origin is not allowed by CORS"));
-  },
+  origin: true,
   credentials: true,
   methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
-app.use(express.json({ limit: "2mb" }));
+app.use(express.json({ limit: "25mb" }));
+app.use(express.urlencoded({ limit: "25mb", extended: true }));
 app.use(morgan("dev"));
 app.use("/api", rateLimit({ windowMs: 15 * 60 * 1000, limit: 500, standardHeaders: "draft-7", legacyHeaders: false }));
 app.get("/api/health", (req, res) => res.json({ status: "ok", service: "GreenBasket API" }));
@@ -36,6 +35,8 @@ app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/banners", bannerRoutes);
+app.use("/api/settings", settingRoutes);
 app.use(notFound);
 app.use(errorHandler);
 

@@ -52,28 +52,28 @@ export default function Dashboard() {
           </p>
         </div>
         <Link href="/" className="btn-secondary">
-          View storefront <ArrowUpRight size={15} />
+          View storefront <ArrowUpRight size={15} className="shrink-0" />
         </Link>
       </div>
       {error && <p className="mb-4 text-sm text-red-500">{error}</p>}
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 xl:grid-cols-4">
         {cards.map(([label, value, Icon]) => (
           <div key={label} className="panel">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">{label}</span>
-              <span className="rounded-xl bg-emerald-50 p-2 text-emerald-800">
-                <Icon size={19} />
+              <span className="text-xs sm:text-sm text-muted-foreground">{label}</span>
+              <span className="rounded-xl bg-emerald-50 p-2 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-400 shrink-0">
+                <Icon size={19} className="shrink-0" />
               </span>
             </div>
-            <p className="mt-4 text-2xl font-black">{value}</p>
+            <p className="mt-3 sm:mt-4 text-xl sm:text-2xl font-black">{value}</p>
           </div>
         ))}
       </div>
       <div className="mt-6 grid gap-4 lg:grid-cols-[1fr_300px]">
         <section className="panel">
           <h2 className="font-bold">Recent orders</h2>
-          <div className="mt-4 overflow-x-auto">
-            <table className="w-full min-w-137.5 text-left text-sm">
+          <div className="mt-4 overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+            <table className="w-full min-w-[480px] text-left text-sm">
               <thead className="text-xs text-muted-foreground">
                 <tr>
                   <th className="py-3">Order</th>

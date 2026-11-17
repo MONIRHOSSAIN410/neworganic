@@ -7,7 +7,12 @@ export async function listProducts(req, res) {
   if (category) filter.category = category;
   if (featured === "true") filter.isFeatured = true;
   if (search) filter.$text = { $search: search };
-  const products = await Product.find(filter).populate("category", "name slug").sort({ createdAt: -1 }).limit(Math.min(Number(limit) || 100, 200));
+  res.set("Cache-Control", "public, max-age=10, stale-while-revalidate=30");
+  const products = await Product.find(filter)
+    .populate("category", "name slug")
+    .sort({ createdAt: -1 })
+    .limit(Math.min(Number(limit) || 100, 200))
+    .lean();
   res.json(products);
 }
 export async function getProduct(req, res) {

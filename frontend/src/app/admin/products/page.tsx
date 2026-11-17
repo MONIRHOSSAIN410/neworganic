@@ -135,7 +135,7 @@ export default function ProductsAdmin() {
           </p>
         </div>
         <button onClick={() => start()} className="btn-primary">
-          <Plus size={16} /> Add product
+          <Plus size={16} className="shrink-0" /> Add product
         </button>
       </div>
 
@@ -146,7 +146,7 @@ export default function ProductsAdmin() {
               {editing ? "Edit product" : "Add new product"}
             </h2>
             <button type="button" onClick={() => setShow(false)}>
-              <X size={18} />
+              <X size={18} className="shrink-0" />
             </button>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -181,7 +181,7 @@ export default function ProductsAdmin() {
               <label className="label mb-1 block">Product Image</label>
               <div className="flex flex-col sm:flex-row items-center gap-4">
                 <label className="flex flex-1 w-full items-center justify-center gap-2 rounded-lg border border-dashed border-gray-300 p-4 cursor-pointer hover:bg-muted/50 transition">
-                  <Upload size={18} className="text-muted-foreground" />
+                  <Upload size={18} className="text-muted-foreground shrink-0" />
                   <span className="text-sm font-medium text-muted-foreground">
                     Upload image from Desktop
                   </span>
@@ -193,16 +193,38 @@ export default function ProductsAdmin() {
                   />
                 </label>
                 {form.image && (
-                  <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border">
-                    <Image
-                      src={form.image}
-                      alt="Preview"
-                      fill
-                      className="object-cover"
-                    />
+                  <div className="relative group shrink-0">
+                    <div className="relative h-16 w-16 overflow-hidden rounded-lg border shadow-sm">
+                      <Image
+                        src={form.image}
+                        alt="Preview"
+                        fill
+                        unoptimized
+                        referrerPolicy="no-referrer"
+                        className="object-cover"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setForm({ ...form, image: "" })}
+                      className="absolute -top-1.5 -right-1.5 bg-red-600 hover:bg-red-700 text-white rounded-full p-1 shadow transition flex items-center justify-center cursor-pointer"
+                      title="Remove image"
+                    >
+                      <Trash2 size={11} className="shrink-0" />
+                    </button>
                   </div>
                 )}
               </div>
+              {form.image && (
+                <button
+                  type="button"
+                  onClick={() => setForm({ ...form, image: "" })}
+                  className="mt-1.5 inline-flex items-center gap-1 text-xs font-bold text-red-600 hover:text-red-700 cursor-pointer"
+                >
+                  <Trash2 size={12} className="shrink-0" />
+                  <span>Remove Image (ছবি ডিলিট করুন)</span>
+                </button>
+              )}
               <input
                 type="text"
                 placeholder="Or paste image URL"
@@ -280,6 +302,8 @@ export default function ProductsAdmin() {
                         src={p.image}
                         alt={p.name}
                         fill
+                        unoptimized
+                        referrerPolicy="no-referrer"
                         className="object-cover"
                       />
                     </div>
@@ -293,14 +317,15 @@ export default function ProductsAdmin() {
                 <td>{p.stock}</td>
                 <td>
                   <div className="flex gap-2">
-                    <button onClick={() => start(p)} className="icon-button">
-                      <Pencil size={15} />
+                    <button onClick={() => start(p)} className="icon-button" aria-label="Edit product">
+                      <Pencil size={15} className="shrink-0" />
                     </button>
                     <button
                       onClick={() => del(p._id)}
                       className="icon-button text-red-500"
+                      aria-label="Delete product"
                     >
-                      <Trash2 size={15} />
+                      <Trash2 size={15} className="shrink-0" />
                     </button>
                   </div>
                 </td>

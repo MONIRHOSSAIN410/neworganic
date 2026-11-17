@@ -51,23 +51,23 @@ export default function OrderDetail() {
     <div>
       <Link
         href="/admin/orders"
-        className="mb-5 inline-flex items-center gap-2 text-sm text-muted-foreground"
+        className="mb-5 inline-flex items-center gap-2 text-xs sm:text-sm text-muted-foreground hover:text-foreground transition"
       >
-        <ArrowLeft size={15} /> Back to orders
+        <ArrowLeft size={15} className="shrink-0" /> Back to orders
       </Link>
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
         <div>
           <p className="text-xs font-bold tracking-widest text-emerald-700">
             ORDER DETAILS
           </p>
-          <h1 className="text-3xl font-black">{order.orderNumber}</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="text-2xl sm:text-3xl font-black">{order.orderNumber}</h1>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
             {new Date(order.createdAt).toLocaleString()}
           </p>
         </div>
         <div className="flex gap-2">
           <select
-            className="field"
+            className="field flex-1 sm:w-44"
             value={status}
             onChange={(e) => setStatus(e.target.value)}
           >
@@ -92,6 +92,8 @@ export default function OrderDetail() {
                       src={item.image}
                       alt={item.name}
                       fill
+                      unoptimized
+                      referrerPolicy="no-referrer"
                       className="object-cover"
                     />
                   )}
@@ -131,8 +133,8 @@ export default function OrderDetail() {
                 <span>Subtotal</span>
                 <b>{money(order.subtotal)}</b>
               </div>
-              <div className="flex justify-between">
-                <span>Delivery</span>
+              <div className="flex justify-between items-center">
+                <span>Delivery ({order.deliveryArea === "outside_dhaka" ? "Outside Dhaka" : "Inside Dhaka"})</span>
                 <b>{money(order.deliveryFee)}</b>
               </div>
               <div className="flex justify-between border-t pt-3 text-base">

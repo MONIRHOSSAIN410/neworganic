@@ -1,10 +1,23 @@
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+function getApiBase(): string {
+  const envApi = process.env.NEXT_PUBLIC_API_URL;
+  if (typeof window !== "undefined") {
+    if (!envApi || envApi.includes("localhost")) {
+      const hostname = window.location.hostname;
+      if (hostname && hostname !== "localhost" && hostname !== "127.0.0.1") {
+        return `http://${hostname}:5000/api`;
+      }
+    }
+  }
+  return envApi || "http://localhost:5000/api";
+}
+
 export async function api<T>(
   path: string,
   options: RequestInit = {},
   token?: string,
 ): Promise<T> {
-  const response = await fetch(`${API}${path}`, {
+  const base = getApiBase();
+  const response = await fetch(`${base}${path}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",

@@ -18,6 +18,7 @@ const orderSchema = new mongoose.Schema({
   },
   items: { type: [orderItemSchema], required: true },
   subtotal: { type: Number, required: true },
+  deliveryArea: { type: String, enum: ["inside_dhaka", "outside_dhaka"], default: "inside_dhaka" },
   deliveryFee: { type: Number, default: 0 },
   total: { type: Number, required: true },
   note: { type: String, default: "" },

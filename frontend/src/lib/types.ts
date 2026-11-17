@@ -35,9 +35,39 @@ export type Order = {
     unit: string;
   }[];
   subtotal: number;
+  deliveryArea?: "inside_dhaka" | "outside_dhaka";
   deliveryFee: number;
   total: number;
   note?: string;
   status: string;
   createdAt: string;
+};
+
+export type Banner = {
+  _id: string;
+  title: string;
+  subtitle?: string;
+  accent?: string;
+  copy?: string;
+  image?: string;
+  link?: string;
+  bgGradient?: string;
+  isActive: boolean;
+  order?: number;
+  createdAt?: string;
+};
+
+export type SiteSettings = {
+  shopName?: string;
+  shopLogo?: string;
+  heroImage?: string;
+  showHeroText?: boolean;
+  heroTitle?: string;
+  heroAccent?: string;
+  heroSubtitle?: string;
+  heroCopy?: string;
+  heroLink?: string;
+  hotline?: string;
+  address?: string;
+  facebookLink?: string;
 };

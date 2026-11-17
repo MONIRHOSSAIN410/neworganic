@@ -4,7 +4,7 @@ import Product from "../models/Product.js";
 const allowed = ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled"];
 
 export async function createOrder(req, res) {
-  const { customer, items, note = "" } = req.body;
+  const { customer, items, note = "", deliveryArea = "inside_dhaka" } = req.body;
   if (!customer?.name || !customer?.phone || !customer?.address || !Array.isArray(items) || !items.length)
     return res.status(400).json({ message: "Complete delivery information and add at least one item" });
 
@@ -17,8 +17,20 @@ export async function createOrder(req, res) {
     normalized.push({ product: product._id, name: product.name, image: product.image, price: product.price, quantity, unit: product.unit });
   }
   const subtotal = normalized.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const deliveryFee = subtotal >= 1500 ? 0 : 60;
-  const order = await Order.create({ customer, items: normalized, subtotal, deliveryFee, total: subtotal + deliveryFee, note });
+  const normalizedArea = deliveryArea === "outside_dhaka" ? "outside_dhaka" : "inside_dhaka";
+  const deliveryFee = normalizedArea === "outside_dhaka"
+    ? (subtotal >= 2500 ? 0 : 120)
+    : (subtotal >= 1500 ? 0 : 60);
+
+  const order = await Order.create({
+    customer,
+    items: normalized,
+    subtotal,
+    deliveryArea: normalizedArea,
+    deliveryFee,
+    total: subtotal + deliveryFee,
+    note
+  });
   for (const item of normalized) await Product.findByIdAndUpdate(item.product, { $inc: { stock: -item.quantity } });
   res.status(201).json(order);
 }
