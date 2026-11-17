@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { PhoneCall, Truck, ShieldCheck, Clock, MessageSquare, ArrowUpRight, MapPin } from "lucide-react";
+import { PhoneCall, Truck, ShieldCheck, Clock, MessageSquare, ArrowUpRight, MapPin, Mail } from "lucide-react";
 
 export function Footer() {
   return (
@@ -106,6 +106,13 @@ export function Footer() {
                 <span>হটলাইন: 01758749698</span>
               </a>
               <a
+                href="mailto:savorynestbd@proton.me"
+                className="flex items-center gap-2 rounded-xl border bg-card p-2.5 font-bold text-emerald-700 hover:border-emerald-600 transition shadow-sm"
+              >
+                <Mail size={16} className="shrink-0" />
+                <span className="truncate">ইমেইল: savorynestbd@proton.me</span>
+              </a>
+              <a
                 href="https://wa.me/8801758749698"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -155,11 +162,11 @@ export function Footer() {
             <div className="space-y-2 text-xs">
               <div className="flex items-center justify-between rounded-lg bg-muted/60 px-3 py-2">
                 <span>ঢাকার ভিতরে (Inside Dhaka):</span>
-                <b className="text-emerald-700">৳ ৬০</b>
+                <b className="text-emerald-700">৳ ৮০</b>
               </div>
               <div className="flex items-center justify-between rounded-lg bg-muted/60 px-3 py-2">
                 <span>ঢাকার বাইরে (Outside Dhaka):</span>
-                <b className="text-emerald-700">৳ ১২০</b>
+                <b className="text-emerald-700">৳ ১৪০</b>
               </div>
               <p className="text-[11px] text-muted-foreground leading-relaxed">
                 চেকআউটের সময় আপনার ঠিকানা অনুযায়ী স্বয়ংক্রিয়ভাবে ডেলিভারি চার্জ যুক্ত হবে।

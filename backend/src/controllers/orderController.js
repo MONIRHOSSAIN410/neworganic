@@ -1,5 +1,6 @@
 import Order from "../models/Order.js";
 import Product from "../models/Product.js";
+import Setting from "../models/Setting.js";
 
 const allowed = ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled"];
 
@@ -18,9 +19,14 @@ export async function createOrder(req, res) {
   }
   const subtotal = normalized.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const normalizedArea = deliveryArea === "outside_dhaka" ? "outside_dhaka" : "inside_dhaka";
+  
+  const settings = await Setting.findOne({ key: "site_settings" }).lean();
+  const feeInside = Number(settings?.deliveryInsideDhaka) || 80;
+  const feeOutside = Number(settings?.deliveryOutsideDhaka) || 140;
+
   const deliveryFee = normalizedArea === "outside_dhaka"
-    ? (subtotal >= 2500 ? 0 : 120)
-    : (subtotal >= 1500 ? 0 : 60);
+    ? (subtotal >= 2500 ? 0 : feeOutside)
+    : (subtotal >= 1500 ? 0 : feeInside);
 
   const order = await Order.create({
     customer,

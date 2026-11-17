@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Sliders, Upload, Save, CheckCircle2, Store, PhoneCall, MapPin, Facebook, Trash2, Eye } from "lucide-react";
+import { Sliders, Upload, Save, CheckCircle2, Store, PhoneCall, MapPin, Facebook, Trash2, Eye, Mail, Truck } from "lucide-react";
 import { api } from "@/lib/api";
 import type { SiteSettings } from "@/lib/types";
 import { toast } from "sonner";
@@ -19,8 +19,11 @@ export default function SettingsAdmin() {
     heroCopy: "Shop honest ingredients, organic pantry essentials and everyday goodness for your family.",
     heroLink: "#products",
     hotline: "01758749698",
+    email: "savorynestbd@proton.me",
     address: "Khilkhet, Dhaka 1229",
     facebookLink: "https://www.facebook.com/savorynestbd",
+    deliveryInsideDhaka: 80,
+    deliveryOutsideDhaka: 140,
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -363,7 +366,7 @@ export default function SettingsAdmin() {
             </h2>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div>
               <label className="label flex items-center gap-1.5">
                 <PhoneCall size={13} className="text-emerald-700 shrink-0" />
@@ -374,6 +377,20 @@ export default function SettingsAdmin() {
                 value={form.hotline}
                 onChange={(e) => setForm({ ...form, hotline: e.target.value })}
                 placeholder="01758749698"
+              />
+            </div>
+
+            <div>
+              <label className="label flex items-center gap-1.5">
+                <Mail size={13} className="text-emerald-700 shrink-0" />
+                Email (ইমেইল)
+              </label>
+              <input
+                className="field"
+                type="email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                placeholder="savorynestbd@proton.me"
               />
             </div>
 
@@ -401,6 +418,46 @@ export default function SettingsAdmin() {
                 onChange={(e) => setForm({ ...form, facebookLink: e.target.value })}
                 placeholder="https://www.facebook.com/savorynestbd"
               />
+            </div>
+          </div>
+        </section>
+
+        {/* 4. Delivery Charges Configuration */}
+        <section className="panel space-y-4">
+          <div className="border-b pb-3">
+            <h2 className="text-base font-bold text-foreground flex items-center gap-2">
+              <Truck size={18} className="text-emerald-700 shrink-0" />
+              Delivery Charges (ডেলিভারি চার্জ নির্ধারণ)
+            </h2>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label className="label">ঢাকার ভিতরে ডেলিভারি চার্জ (Inside Dhaka ৳)</label>
+              <input
+                type="number"
+                className="field"
+                value={form.deliveryInsideDhaka ?? 80}
+                onChange={(e) => setForm({ ...form, deliveryInsideDhaka: Number(e.target.value) })}
+                placeholder="80"
+              />
+              <p className="text-[11px] text-muted-foreground mt-1">
+                ডিফল্ট: ৳ ৮০ (Inside Dhaka)
+              </p>
+            </div>
+
+            <div>
+              <label className="label">ঢাকার বাইরে ডেলিভারি চার্জ (Outside Dhaka ৳)</label>
+              <input
+                type="number"
+                className="field"
+                value={form.deliveryOutsideDhaka ?? 140}
+                onChange={(e) => setForm({ ...form, deliveryOutsideDhaka: Number(e.target.value) })}
+                placeholder="140"
+              />
+              <p className="text-[11px] text-muted-foreground mt-1">
+                ডিফল্ট: ৳ ১৪০ (Outside Dhaka)
+              </p>
             </div>
           </div>
         </section>

@@ -1,10 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useCart } from "@/components/store/cart-provider";
 import { api, money } from "@/lib/api";
-import type { Order } from "@/lib/types";
+import type { Order, SiteSettings } from "@/lib/types";
 import Link from "next/link";
 import { MapPin, Truck, CheckCircle2 } from "lucide-react";
 
@@ -14,12 +14,26 @@ export default function CheckoutPage() {
   const [busy, setBusy] = useState(false);
   const [deliveryArea, setDeliveryArea] = useState<"inside_dhaka" | "outside_dhaka">("inside_dhaka");
   const [manualAreaSelect, setManualAreaSelect] = useState(false);
+  const [rates, setRates] = useState({ inside: 80, outside: 140 });
   const [form, setForm] = useState({
     name: "",
     phone: "",
     address: "",
     note: "",
   });
+
+  useEffect(() => {
+    api<SiteSettings>("/settings")
+      .then((res) => {
+        if (res) {
+          setRates({
+            inside: Number(res.deliveryInsideDhaka) || 80,
+            outside: Number(res.deliveryOutsideDhaka) || 140,
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Auto Delivery Charge calculation based on selected or detected area
   const delivery =
@@ -28,10 +42,10 @@ export default function CheckoutPage() {
       : deliveryArea === "outside_dhaka"
       ? subtotal >= 2500
         ? 0
-        : 120
+        : rates.outside
       : subtotal >= 1500
       ? 0
-      : 60;
+      : rates.inside;
 
   // Smart Auto-detection when typing address
   function handleAddressChange(val: string) {
@@ -152,7 +166,7 @@ export default function CheckoutPage() {
                   <MapPin size={18} className="text-emerald-600 shrink-0" />
                   <div className="min-w-0">
                     <p className="text-xs font-bold truncate">ঢাকার ভিতরে (Inside Dhaka)</p>
-                    <p className="text-[11px] text-muted-foreground">হোম ডেলিভারি চার্জ: ৳৬০</p>
+                    <p className="text-[11px] text-muted-foreground">হোম ডেলিভারি চার্জ: ৳{rates.inside}</p>
                   </div>
                 </div>
                 {deliveryArea === "inside_dhaka" && (
@@ -176,7 +190,7 @@ export default function CheckoutPage() {
                   <Truck size={18} className="text-emerald-600 shrink-0" />
                   <div className="min-w-0">
                     <p className="text-xs font-bold truncate">ঢাকার বাইরে (Outside Dhaka)</p>
-                    <p className="text-[11px] text-muted-foreground">হোম ডেলিভারি চার্জ: ৳১২০</p>
+                    <p className="text-[11px] text-muted-foreground">হোম ডেলিভারি চার্জ: ৳{rates.outside}</p>
                   </div>
                 </div>
                 {deliveryArea === "outside_dhaka" && (
